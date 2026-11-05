@@ -1,0 +1,77 @@
+{% extends 'maquinarias/base.html' %}
+
+{% block title %}{{ maquinaria.nombre }} | MaquiConstruye{% endblock %}
+
+{% block content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catalogo' %}">Catálogo</a></li>
+        <li class="breadcrumb-item active">{{ maquinaria.nombre }}</li>
+    </ol>
+</nav>
+
+<div class="card shadow border-0">
+    <div class="row g-0">
+        <div class="col-md-6 bg-light d-flex align-items-center justify-content-center p-3">
+            {% if maquinaria.imagen %}
+                <img src="{{ maquinaria.imagen.url }}" class="img-fluid rounded shadow-sm" alt="{{ maquinaria.nombre }}">
+            {% else %}
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-truck fs-1"></i>
+                    <p class="mt-2 mb-0">Sin fotografía disponible</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            <div class="card-body p-4">
+                <span class="badge bg-primary mb-2">{{ maquinaria.categoria.nombre }}</span>
+                <small class="text-muted d-block mb-2">SKU: <strong>{{ maquinaria.codigo }}</strong></small>
+                <h2 class="card-title fw-bold text-dark mb-3">{{ maquinaria.nombre }}</h2>
+
+                <p class="text-secondary mb-4">{{ maquinaria.descripcion }}</p>
+
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="bi bi-currency-dollar me-2 text-success"></i>Precio Arriendo / Día</span>
+                        <strong class="fs-5 text-success">${{ maquinaria.precio_arriendo_dia }} CLP</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="bi bi-shield-check me-2 text-primary"></i>Garantía Requerida</span>
+                        <strong>${{ maquinaria.garantia_requerida }} CLP</strong>
+                    </li>
+                    {% if maquinaria.precio_venta %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="bi bi-tag-fill me-2 text-secondary"></i>Precio Venta Directa</span>
+                        <strong>${{ maquinaria.precio_venta }} CLP</strong>
+                    </li>
+                    {% endif %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span><i class="bi bi-boxes me-2 text-info"></i>Stock Disponible</span>
+                        <span class="badge bg-success rounded-pill">{{ maquinaria.stock }} unidades</span>
+                    </li>
+                </ul>
+
+                <form method="POST" action="{% url 'agregar_al_cotizador' maquinaria.pk %}" class="bg-light p-3 rounded border">
+                    {% csrf_token %}
+                    <div class="row align-items-center g-2">
+                        <div class="col-auto">
+                            <label for="dias" class="col-form-label fw-bold">Días de Arriendo:</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="number" id="dias" name="dias" value="1" min="1" max="90" class="form-control text-center" style="width: 90px;" required>
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-warning w-100 fw-bold">
+                                <i class="bi bi-cart-plus-fill me-1"></i>Agregar a Cotización
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

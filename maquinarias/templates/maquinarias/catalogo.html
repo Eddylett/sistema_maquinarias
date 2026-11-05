@@ -1,0 +1,91 @@
+{% extends 'maquinarias/base.html' %}
+
+{% block title %}Catálogo de Maquinarias | MaquiConstruye{% endblock %}
+
+{% block content %}
+
+
+<div class="hero-banner rounded-3 mb-4 shadow">
+    <h1 class="display-5 fw-bold">Arriendo y Venta de Maquinaria Pesada</h1>
+    <p class="lead">Soluciones de equipamiento para obras civiles, edificación y minería.</p>
+</div>
+
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET" action="{% url 'catalogo' %}" class="row g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="q" class="form-control" placeholder="Buscar maquinaria por nombre..." value="{{ query }}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select name="categoria" class="form-select">
+                    <option value="">Todas las Categorías / Faenas</option>
+                    {% for cat in categorias %}
+                        <option value="{{ cat.id }}" {% if categoria_seleccionada == cat.id %}selected{% endif %}>
+                            {{ cat.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-dark"><i class="bi bi-filter me-1"></i>Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for maquina in maquinarias %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 position-relative">
+                {% if maquina.destacado %}
+                    <span class="position-absolute top-0 start-0 bg-warning text-dark px-3 py-1 rounded-end fw-bold mt-2 shadow-sm" style="z-index: 1;">
+                        <i class="bi bi-star-fill me-1"></i>Destacado
+                    </span>
+                {% endif %}
+
+                {% if maquina.imagen %}
+                    <img src="{{ maquina.imagen.url }}" class="card-img-top" alt="{{ maquina.nombre }}">
+                {% else %}
+                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center text-white">
+                        <i class="bi bi-image fs-1"></i>
+                    </div>
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-secondary">{{ maquina.categoria.nombre }}</span>
+                        <small class="text-muted fw-bold">{{ maquina.codigo }}</small>
+                    </div>
+                    <h5 class="card-title text-dark fw-bold">{{ maquina.nombre }}</h5>
+                    <p class="card-text text-muted small flex-grow-1">
+                        {{ maquina.descripcion|truncatewords:20 }}
+                    </p>
+                    <div class="border-top pt-3 mt-2">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">Arriendo por día:</span>
+                            <span class="fs-5 fw-bold text-success">${{ maquina.precio_arriendo_dia }} CLP</span>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'detalle_maquinaria' maquina.pk %}" class="btn btn-outline-dark btn-sm">
+                                <i class="bi bi-eye-fill me-1"></i>Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-exclamation-circle text-muted fs-1 mb-2"></i>
+            <h4 class="text-muted">No se encontraron maquinarias registradas o disponibles.</h4>
+            <a href="{% url 'catalogo' %}" class="btn btn-outline-primary mt-2">Ver todo el catálogo</a>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
