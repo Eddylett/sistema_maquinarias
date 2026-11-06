@@ -1,0 +1,84 @@
+{% extends 'maquinarias/base.html' %}
+
+{% block title %}{{ titulo }} | MaquiConstruye{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow border-0">
+            <div class="card-header bg-dark text-white p-3">
+                <h4 class="mb-0 fw-bold"><i class="bi bi-pencil-square me-2 text-warning"></i>{{ titulo }}</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Código SKU *</label>
+                            {{ form.codigo }}
+                            {{ form.codigo.errors }}
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold">Nombre de la Maquinaria *</label>
+                            {{ form.nombre }}
+                            {{ form.nombre.errors }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Categoría / Tipo de Faena *</label>
+                            {{ form.categoria }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Modalidad *</label>
+                            {{ form.tipo_oferta }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Descripción y Especificaciones *</label>
+                            {{ form.descripcion }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Arriendo / Día ($) *</label>
+                            {{ form.precio_arriendo_dia }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Precio Venta ($)</label>
+                            {{ form.precio_venta }}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Garantía ($) *</label>
+                            {{ form.garantia_requerida }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Stock Disponible *</label>
+                            {{ form.stock }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Estado Operativo *</label>
+                            {{ form.estado }}
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Fotografía del Equipo</label>
+                            {{ form.imagen }}
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                {{ form.destacado }}
+                                <label class="form-check-label fw-bold" for="{{ form.destacado.id_for_label }}">
+                                    Destacar este producto en la página principal
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                        <a href="{% url 'admin_panel' %}" class="btn btn-outline-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-success px-4 fw-bold">Guardar Maquinaria</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

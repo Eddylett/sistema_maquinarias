@@ -1,0 +1,27 @@
+{% extends 'maquinarias/base.html' %}
+
+{% block title %}Eliminar Maquinaria | MaquiConstruye{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center py-4">
+    <div class="col-md-6">
+        <div class="card border-danger shadow">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Eliminación</h4>
+            </div>
+            <div class="card-body text-center p-4">
+                <p class="fs-5">¿Estás seguro de que deseas eliminar la maquinaria <strong>"{{ maquinaria.nombre }}"</strong> (SKU: {{ maquinaria.codigo }})?</p>
+                <p class="text-muted small">Esta acción no se puede deshacer.</p>
+
+                <form method="POST" class="d-flex justify-content-center gap-3 mt-4">
+                    {% csrf_token %}
+                    <a href="{% url 'admin_panel' %}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-danger fw-bold">Sí, Eliminar Registro</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

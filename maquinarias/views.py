@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from .models import Maquinaria, CategoriaFaena
+from django.contrib.auth.decorators import login_required
+from .forms import MaquinariaForm
 
 
 def catalogo(request):
@@ -99,3 +101,47 @@ def vaciar_cotizador(request):
         del request.session['cotizador']
         messages.info(request, "Se ha limpiado la cotización.")
     return redirect('ver_cotizador')
+
+
+
+# --- VISTAS PROTEGIDAS  ---
+
+@login_required
+def admin_panel(request):
+    maquinarias = Maquinaria.objects.all().order_by('-creado_en')
+    return render(request, 'maquinarias/admin_panel.html', {'maquinarias': maquinarias})
+
+@login_required
+def crear_maquinaria(request):
+    if request.method == 'POST':
+        form = MaquinariaForm(request.POST, request.FILES)
+        if form.is_valid():
+            maquinaria = form.save()
+            messages.success(request, f"Maquinaria '{maquinaria.nombre}' creada con éxito.")
+            return redirect('admin_panel')
+    else:
+        form = MaquinariaForm()
+    return render(request, 'maquinarias/form_maquinaria.html', {'form': form, 'titulo': 'Registrar Nueva Maquinaria'})
+
+@login_required
+def editar_maquinaria(request, pk):
+    maquinaria = get_object_or_404(Maquinaria, pk=pk)
+    if request.method == 'POST':
+        form = MaquinariaForm(request.POST, request.FILES, instance=maquinaria)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Maquinaria '{maquinaria.nombre}' actualizada correctamente.")
+            return redirect('admin_panel')
+    else:
+        form = MaquinariaForm(instance=maquinaria)
+    return render(request, 'maquinarias/form_maquinaria.html', {'form': form, 'titulo': f'Editar: {maquinaria.nombre}'})
+
+@login_required
+def eliminar_maquinaria(request, pk):
+    maquinaria = get_object_or_404(Maquinaria, pk=pk)
+    if request.method == 'POST':
+        nombre = maquinaria.nombre
+        maquinaria.delete()
+        messages.warning(request, f"Maquinaria '{nombre}' eliminada del sistema.")
+        return redirect('admin_panel')
+    return render(request, 'maquinarias/confirmar_eliminar.html', {'maquinaria': maquinaria})

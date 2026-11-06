@@ -1,0 +1,72 @@
+{% extends 'maquinarias/base.html' %}
+
+{% block title %}Panel de Gestión | Backoffice MaquiConstruye{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-speedometer2 text-primary me-2"></i>Panel de Administración del Inventario</h2>
+    <a href="{% url 'crear_maquinaria' %}" class="btn btn-success fw-bold">
+        <i class="bi bi-plus-lg me-1"></i>Nueva Maquinaria
+    </a>
+</div>
+
+<div class="card shadow border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio Arriendo</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in maquinarias %}
+                        <tr>
+                            <td class="fw-bold">{{ item.codigo }}</td>
+                            <td>{{ item.nombre }}</td>
+                            <td><span class="badge bg-secondary">{{ item.categoria.nombre }}</span></td>
+                            <td>${{ item.precio_arriendo_dia }} CLP</td>
+                            <td>
+                                {% if item.stock > 0 %}
+                                    <span class="badge bg-success">{{ item.stock }} un.</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Sin Stock</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if item.estado == 'DISPONIBLE' %}
+                                    <span class="badge bg-success">Disponible</span>
+                                {% elif item.estado == 'ARRENDADO' %}
+                                    <span class="badge bg-primary">En Arriendo</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">{{ item.get_estado_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'editar_maquinaria' item.pk %}" class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <a href="{% url 'eliminar_maquinaria' item.pk %}" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">No hay registros de maquinarias creados.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
